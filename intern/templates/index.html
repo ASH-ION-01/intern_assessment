@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Viewer</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <h1>Fetched Data</h1>
+    <button onclick="fetchData()">Load Data</button>
+    <table id="data-table">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch("http://127.0.0.1:8000/fetch-data");
+            const data = await response.json();
+            
+            let table = document.getElementById("data-table");
+            let thead = table.querySelector("thead");
+            let tbody = table.querySelector("tbody");
+
+            // Clear previous data
+            thead.innerHTML = "";
+            tbody.innerHTML = "";
+
+            if (data.length > 0) {
+                // Create table headers
+                let headers = Object.keys(data[0]);
+                let headerRow = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+                thead.innerHTML = headerRow;
+
+                // Create table rows
+                data.forEach(row => {
+                    let rowHTML = "<tr>" + headers.map(h => `<td>${row[h]}</td>`).join("") + "</tr>";
+                    tbody.innerHTML += rowHTML;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
